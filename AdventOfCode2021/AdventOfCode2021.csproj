@@ -11,4 +11,8 @@
     <ProjectReference Include="..\AdventOfCodeScaffolding\AdventOfCodeScaffolding.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="Common\" />
+  </ItemGroup>
+
 </Project>
