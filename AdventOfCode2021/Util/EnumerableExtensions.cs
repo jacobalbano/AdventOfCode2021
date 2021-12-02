@@ -24,19 +24,62 @@ public static class EnumerableExtensions
         }
     }
 
-    public static IEnumerable<IEnumerable<T>> ChunkBy<T>(this IEnumerable<T> self, int chunkSize)
+    public static IEnumerable<(T, T)> Lag<T>(this IEnumerable<T> self)
     {
         using var e = self.GetEnumerator();
-        while (e.MoveNext())
-            yield return Inner();
+        if (!e.MoveNext())
+            yield break;
 
-        IEnumerable<T> Inner()
+        T first = e.Current;
+        while (e.MoveNext())
+            yield return (first, first = e.Current);
+    }
+
+    public static IEnumerable<T[]> ChunkBy<T>(this IEnumerable<T> self, int chunkSize)
+    {
+        using var e = self.GetEnumerator();
+        for (bool go = e.MoveNext(); go;)
         {
+            var result = new T[chunkSize];
             for (int i = 0; i < chunkSize; i++)
             {
-                yield return e.Current;
-                e.MoveNext();
+                result[i] = e.Current;
+                if (!(go = e.MoveNext()))
+                    break;
             }
+
+            yield return result;
+        }
+    }
+
+    public static IEnumerable<T[]> WindowBy<T>(this IEnumerable<T> self, int windowSize)
+    {
+        using var e = self.GetEnumerator();
+        bool go = e.MoveNext();
+        if (!go) yield break;
+        
+        //  make first window
+        var result = new T[windowSize];
+        for (int i = 0; i < windowSize; i++)
+        {
+            result[i] = e.Current;
+            if (!(go = e.MoveNext()))
+                break;
+        }
+
+        yield return result;
+
+        //  slide it
+        while (go)
+        {
+            var last = result;
+            result = new T[windowSize];
+            for (int i = 1; i < windowSize; i++)
+                result[i - 1] = last[i];
+
+            result[windowSize - 1] = e.Current;
+            yield return result;
+            go = e.MoveNext();
         }
     }
 

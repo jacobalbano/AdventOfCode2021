@@ -10,19 +10,22 @@ namespace AdventOfCode2021.Challenges
     [Challenge(1, "Sonar Sweep")]
     class Day01 : ChallengeBase
     {
-
         public override object Part1(string input)
         {
-            return Scan(1, input.ToLines()
+            return input.ToLines()
                 .Select(int.Parse)
-                .ToArray());
+                .Lag()
+                .Count(x => x.Item1 < x.Item2);
         }
 
         public override object Part2(string input)
         {
-            return Scan(3, input.ToLines()
+            return input.ToLines()
                 .Select(int.Parse)
-                .ToArray());
+                .WindowBy(3)
+                .Select(x => x.Sum())
+                .Lag()
+                .Count(x => x.Item1 < x.Item2);
         }
 
         public override void Part1Test()
@@ -33,26 +36,6 @@ namespace AdventOfCode2021.Challenges
         public override void Part2Test()
         {
             Assert.AreEqual(5, Part2(sample));
-        }
-
-        private static int Scan(int windowSize, int[] depths)
-        {
-            int result = 0, lastWindow = SumWindow(windowSize, depths, windowSize - 1);
-            for (int i = windowSize; i < depths.Length; i++)
-            {
-                if (lastWindow < (lastWindow = SumWindow(windowSize, depths, i)))
-                    result++;
-            }
-
-            return result;
-        }
-
-        private static int SumWindow(int windowSize, int[] depths, int i)
-        {
-            int value = 0;
-            while (windowSize --> 0)
-                value += depths[i - windowSize];
-            return value;
         }
 
         const string sample = @"199
