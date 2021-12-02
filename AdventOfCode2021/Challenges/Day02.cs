@@ -23,11 +23,11 @@ namespace AdventOfCode2021.Challenges
 
         public override object Part1(string input)
         {
-            var (x, y) = Parse(input).Aggregate((x: 0, y: 0), (pos, inst) => inst.dir switch
+            var (x, y, _) = Parse(input).Aggregate(new State(), (pos, inst) => inst.dir switch
             {
-                "up" => (pos.x, pos.y - inst.val),
-                "down" => (pos.x, pos.y + inst.val),
-                "forward" => (pos.x + inst.val, pos.y),
+                "up" => pos with { y = pos.y - inst.val },
+                "down" => pos with { y = pos.y + inst.val },
+                "forward" => pos with { x = pos.x + inst.val },
                 _ => throw new UnreachableCodeException()
             });
 
@@ -36,22 +36,18 @@ namespace AdventOfCode2021.Challenges
 
         public override object Part2(string input)
         {
-            int x = 0, y = 0, aim = 0;
-            foreach (var (dir, number) in Parse(input))
+            var (x, y, _) = Parse(input).Aggregate(new State(), (pos, inst) => inst.dir switch
             {
-                switch (dir)
-                {
-                    case "up": aim -= number; break;
-                    case "down": aim += number; break;
-                    case "forward":
-                        x += number;
-                        y += aim * number;
-                        break;
-                    default: Assert.Unreachable(); break;
-                }
-            }
+                "up" => pos with { aim = pos.aim - inst.val },
+                "down" => pos with { aim = pos.aim + inst.val },
+                "forward" => pos with { x = pos.x + inst.val, y = pos.y + pos.aim * inst.val },
+                _ => throw new UnreachableCodeException()
+            });
+
             return x * y;
         }
+
+        private sealed record State (int x = 0, int y = 0, int aim = 0);
 
         private static IEnumerable<(string dir, int val)> Parse(string input)
         {
