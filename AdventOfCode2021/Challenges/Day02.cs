@@ -23,17 +23,13 @@ namespace AdventOfCode2021.Challenges
 
         public override object Part1(string input)
         {
-            int x = 0, y = 0;
-            foreach (var (dir, number) in Parse(input))
+            var (x, y) = Parse(input).Aggregate((x: 0, y: 0), (pos, inst) => inst.dir switch
             {
-                switch (dir)
-                {
-                    case "up": y -= number; break;
-                    case "down": y += number; break;
-                    case "forward": x += number; break;
-                    default: Assert.Unreachable(); break;
-                }
-            }
+                "up" => (pos.x, pos.y - inst.val),
+                "down" => (pos.x, pos.y + inst.val),
+                "forward" => (pos.x + inst.val, pos.y),
+                _ => throw new UnreachableCodeException()
+            });
 
             return x * y;
         }
@@ -57,7 +53,7 @@ namespace AdventOfCode2021.Challenges
             return x * y;
         }
 
-        private static IEnumerable<(string, int)> Parse(string input)
+        private static IEnumerable<(string dir, int val)> Parse(string input)
         {
             return input.ToLines()
                 .Select(x => x.Split(' '))
