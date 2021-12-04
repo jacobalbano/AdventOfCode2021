@@ -1,4 +1,5 @@
 ﻿using AdventOfCode2021.Common;
+using AdventOfCode2021.Util;
 using AdventOfCodeScaffolding;
 using System;
 using System.Collections.Generic;
@@ -16,10 +17,21 @@ namespace AdventOfCode2021.Challenges
             Assert.AreEqual(198, Part1(part1sample));
         }
 
+        public override void Part2Test()
+        {
+            Assert.AreEqual(230, Part2(part1sample));
+        }
+
         public override object Part1(string input)
         {
             FindPowerConsumption(input, out int gamma, out int epsilon);
             return gamma * epsilon;
+        }
+
+        public override object Part2(string input)
+        {
+            FindLifeSupportRating(input, out int oxygen, out int co2);
+            return oxygen * co2;
         }
 
         private static void FindPowerConsumption(string input, out int gamma, out int epsilon)
@@ -33,6 +45,40 @@ namespace AdventOfCode2021.Challenges
             }
 
             epsilon = ~gamma & (1 << grid.Columns) - 1;
+        }
+
+
+        private static void FindLifeSupportRating(string input, out int oxygen, out int co2)
+        {
+            var grid = new Grid<int>(input, x => (int)char.GetNumericValue(x));
+            var values = Enumerable.Range(0, grid.Rows)
+                .Select(r => grid.RowValues(r).Reverse().Select((v, i) => v == 0 ? 0 : Math.Pow(2, i)).Sum())
+                .Select(x => (int)x)
+                .ToArray();
+
+            oxygen = Diagnose(grid, values, 1);
+            co2 = Diagnose(grid, values, 0);
+        }
+
+        private static int Diagnose(Grid<int> grid, int[] values, int target)
+        {
+            var candidates = new List<int>(Enumerable.Range(0, grid.Rows));
+            for (int c = 0; c < grid.Columns; c++)
+            {
+                var matching = candidates.Count(x => grid[x, c] == target);
+                int criteria = target == 0
+                    ? matching <= (candidates.Count - matching) ? 0 : 1
+                    : matching >= (candidates.Count - matching) ? 1 : 0;
+
+                candidates = candidates
+                    .Where(x => grid[x, c] == criteria)
+                    .ToList();
+
+                if (candidates.Count == 1)
+                    return values[candidates.Single()];
+            }
+
+            throw new UnreachableCodeException();
         }
 
         private const string part1sample = @"00100
