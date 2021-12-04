@@ -36,6 +36,13 @@ namespace AdventOfCode2021.Common
                 yield return this[row, col];
         }
 
+        public Grid(int rows, int columns)
+        {
+            Rows = rows;
+            Columns = columns;
+            storage = new T[Rows, Columns];
+        }
+
         public Grid(string input, Func<char, T> parser)
         {
             var lines = input

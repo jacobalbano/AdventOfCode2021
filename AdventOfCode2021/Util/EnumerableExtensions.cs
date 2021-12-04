@@ -89,6 +89,18 @@ public static class EnumerableExtensions
             yield return (T)x;
     }
 
+    public static IEnumerable<(T, Action)> AsRemovable<T>(this List<T> self)
+    {
+        for (int i = 0; i < self.Count;)
+        {
+            bool pass = false;
+            yield return (self[i], () => pass = true);
+
+            if (pass) self.RemoveAt(i);
+            else ++i;
+        }
+    }
+
     public delegate (bool, TOut) SelectWhereSelector<TIn, TOut>(TIn input);
 
     public static IEnumerable<TOut> SelectWhere<TIn, TOut>(this IEnumerable<TIn> self, SelectWhereSelector<TIn, TOut> selector)
@@ -97,6 +109,15 @@ public static class EnumerableExtensions
         {
             var (success, result) = selector(x);
             if (success) yield return result;
+        }
+    }
+
+    public static IEnumerable<TOut> SelectWhere<TIn, TOut>(this IEnumerable<TIn> self, Func<TIn, (TOut, bool)> selector)
+    {
+        foreach (var x in self)
+        {
+            var (success, result) = selector(x);
+            if (result) yield return success;
         }
     }
 

@@ -37,10 +37,10 @@ namespace AdventOfCode2021.Challenges
         private static void FindPowerConsumption(string input, out int gamma, out int epsilon)
         {
             gamma = 0;
-            var grid = new Grid<bool>(input, x => x == '1');
+            var grid = new Grid<int>(input, x => x - '0');
             for (int c = 0; c < grid.Columns; c++)
             {
-                if (grid.ColumnValues(c).Count(x => x) > grid.Rows / 2)
+                if (grid.ColumnValues(c).Count(x => x == 1) > grid.Rows / 2)
                     gamma |= 1 << (grid.Columns - c - 1);
             }
 
@@ -50,7 +50,7 @@ namespace AdventOfCode2021.Challenges
 
         private static void FindLifeSupportRating(string input, out int oxygen, out int co2)
         {
-            var grid = new Grid<int>(input, x => (int)char.GetNumericValue(x));
+            var grid = new Grid<int>(input, x => x - '0');
             var values = Enumerable.Range(0, grid.Rows)
                 .Select(r => grid.RowValues(r).Reverse().Select((v, i) => v == 0 ? 0 : Math.Pow(2, i)).Sum())
                 .Select(x => (int)x)
