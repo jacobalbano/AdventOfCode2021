@@ -12,6 +12,13 @@ public static class TupleExtensions
         b = self[1];
     }
 
+    public static void Deconstruct<T>(this IEnumerable<T> self, out T a, out T b)
+    {
+        using var e = self.GetEnumerator();
+        a = e.MoveNext() ? e.Current : throw new InvalidOperationException();
+        b = e.MoveNext() ? e.Current : throw new InvalidOperationException();
+    }
+
     public static void Deconstruct<T>(this T[] self, out T a, out T b, out T c)
     {
         self.Deconstruct(out a, out b);

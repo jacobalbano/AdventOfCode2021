@@ -2,6 +2,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Runtime.CompilerServices;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -16,12 +17,12 @@ public static class Assert
             IsTrue(Equals(expected[i], actual[i]), $"expected and actual differ at position {i} ({expected[i]}) vs {actual[i]})");
     }
 
-    public static void IsFalse(bool condition, string message)
+    public static void IsFalse(bool condition, [CallerArgumentExpression("condition")] string message)
     {
         IsTrue(!condition, message);
     }
 
-    public static void IsTrue(bool condition, string message)
+    public static void IsTrue(bool condition, [CallerArgumentExpression("condition")] string message = null)
     {
         if (!condition)
             throw new AssertionFailure(message);

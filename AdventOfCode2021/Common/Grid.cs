@@ -17,6 +17,12 @@ namespace AdventOfCode2021.Common
             set => storage[row, col] = value;
         }
 
+        public T this[(int row, int col) cell]
+        {
+            get => storage[cell.row, cell.col];
+            set => storage[cell.row, cell.col] = value;
+        }
+
         public IEnumerable<(int row, int col)> Cells()
         {
             for (int row = 0; row < Rows; row++)
