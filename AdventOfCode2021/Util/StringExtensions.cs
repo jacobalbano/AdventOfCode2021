@@ -25,10 +25,9 @@ public static class StringExtensions
             yield return nextLine;
     }
 
-    public static string[] CSV(this string input)
+    public static IEnumerable<string> CSV(this string input)
     {
         return input.Split(",".ToCharArray(), StringSplitOptions.RemoveEmptyEntries)
-            .Select(x => x.Trim())
-            .ToArray();
+            .Select(x => x.Trim());
     }
 }
