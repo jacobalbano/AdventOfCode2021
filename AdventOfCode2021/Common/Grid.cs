@@ -42,6 +42,19 @@ namespace AdventOfCode2021.Common
                 yield return this[row, col];
         }
 
+        public IEnumerable<T> DiagonalValues(int startRow, int startCol)
+        {
+            while (IsValidPosition(startRow, startCol))
+                yield return this[startRow++, startCol++];
+        }
+
+        public IEnumerable<T> AntidiagonalValues(int startRow, int startCol)
+        {
+            while (IsValidPosition(startRow, startCol))
+                yield return this[startRow--, startCol++];
+        }
+
+
         public Grid(int rows, int columns)
         {
             Rows = rows;

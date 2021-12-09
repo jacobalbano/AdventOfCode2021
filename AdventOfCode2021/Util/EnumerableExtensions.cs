@@ -6,6 +6,28 @@ using System.Text;
 
 public static class EnumerableExtensions
 {
+    public static int[] ToArray(this Range range)
+    {
+        int start = range.Start.Value,
+            end = range.End.Value,
+            span = end - start,
+            sign = Math.Sign(span);
+
+        var result = new int[Math.Abs(span)];
+        for (int i = 0; i < result.Length; i++)
+            result[i] = start + i * sign;
+
+        return result;
+    }
+
+    public static int FindIndex<T>(this T[] self, Predicate<T> match)
+    {
+        for (int i = 0; i < self.Length; i++)
+            if (match(self[i])) return i;
+
+        return -1;
+    }
+
     public static IEnumerable<IEnumerable<T>> PartitionBy<T>(this IEnumerable<T> self, Func<T, bool> delimit)
     {
         using var e = self.GetEnumerator();
