@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-public static class HashsetExtensions
+public static class HashSetExtensions
 {
     public static void AddRange<T>(this HashSet<T> self, IEnumerable<T> range)
     {

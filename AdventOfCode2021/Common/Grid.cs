@@ -54,6 +54,28 @@ namespace AdventOfCode2021.Common
                 yield return this[startRow--, startCol++];
         }
 
+        public IEnumerable<(int row, int col)> SurroundingCells((int row, int col) home, bool includeDiagonals)
+        {
+            return SurroundingCells(home.row, home.col, includeDiagonals);
+        }
+
+        public IEnumerable<(int row, int col)> SurroundingCells(int homeRow, int homeCol, bool includeDiagonals)
+        {
+            for (int r = -1; r < 2; r++)
+            {
+                for (int c = -1; c < 2; c++)
+                {
+                    if (c == 0 && r == 0)
+                        continue;
+                    else if (!IsValidPosition(homeRow + r, homeCol + c))
+                        continue;
+                    else if (!includeDiagonals && Math.Abs(r) == Math.Abs(c))
+                        continue;
+
+                    yield return (homeRow + r, homeCol + c);
+                }
+            }
+        }
 
         public Grid(int rows, int columns)
         {
