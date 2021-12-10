@@ -9,7 +9,7 @@ using System.Threading.Tasks;
 namespace AdventOfCode2021.Challenges
 {
     [Challenge(9, "Smoke Basin")]
-    class Day9 : ChallengeBase
+    class Day09 : ChallengeBase
     {
         public override void Part1Test()
         {
