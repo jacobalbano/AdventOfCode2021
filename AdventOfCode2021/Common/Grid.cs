@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -6,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace AdventOfCode2021.Common
 {
-    public class Grid<T>
+    public class Grid<T> : IEnumerable<T>
     {
         public int Rows { get; }
         public int Columns { get; }
@@ -120,6 +121,17 @@ namespace AdventOfCode2021.Common
                 newData[row, col] = storage[row, col];
 
             return new Grid<T>(newData);
+        }
+
+        public IEnumerator<T> GetEnumerator()
+        {
+            foreach (var cell in Cells())
+                yield return this[cell];
+        }
+
+        IEnumerator IEnumerable.GetEnumerator()
+        {
+            return GetEnumerator();
         }
 
         private Grid(T[,] storage)
